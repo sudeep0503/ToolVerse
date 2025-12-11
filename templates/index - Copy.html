@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ToolVerse – Static Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8f7fb;
+      --header-bg: #ffffff;
+      --text-main: #202124;
+      --text-muted: #757575;
+      --accent: #ff5b5b;
+      --card-bg: #ffffff;
+      --card-shadow: 0 16px 40px rgba(0,0,0,0.05);
+      --radius-card: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 85% 10%, #ffe5df 0, #ffe5df 160px, #f8f7fb 160px);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* Top bar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .topbar-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ff6a5b, #ff9472);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .brand-text-main {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .pill .count {
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    .brand-text-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 18px;
+      font-size: 13px;
+      color: #555;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .main-nav a:hover {
+      color: #111;
+    }
+
+    /* Main layout */
+    .page {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 40px 32px 60px;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .filter-row {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid #e0e0e0;
+      font-size: 12px;
+      background: #fff;
+      color: #555;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pill.active {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    /* Tools grid */
+    .tools-grid {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 22px 22px;
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      box-shadow: var(--card-shadow);
+      padding: 22px 22px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+
+    .tool-card.clickable {
+      cursor: pointer;
+    }
+
+    .tool-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .tool-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .tool-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Icon color variants */
+    .icon-merge     { background: linear-gradient(180deg,#ff8b5e,#ff6a5b); }
+    .icon-split     { background: linear-gradient(180deg,#ffb16a,#ff8b5e); }
+    .icon-compress  { background: linear-gradient(180deg,#7ad069,#4ab84b); }
+    .icon-word      { background: linear-gradient(180deg,#6ca9ff,#4f88ff); }
+    .icon-violet    { background: linear-gradient(180deg,#e1c1ff,#b890ff); }
+    .icon-blue      { background: linear-gradient(180deg,#9fd2ff,#6ca9ff); }
+
+    @media (max-width: 1020px) {
+      .tools-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    }
+    @media (max-width: 720px) {
+      .tools-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .hero-title { font-size: 24px; }
+    }
+    @media (max-width: 520px) {
+      .tools-grid { grid-template-columns: 1fr; }
+      .tool-card { padding: 18px; }
+    }
+
+    /* ===== MODAL STYLES ===== */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.25);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      animation: fadeIn 0.25s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .modal {
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.25);
+      width: 90%;
+      max-width: 520px;
+      padding: 28px 26px 24px;
+      text-align: left;
+      position: relative;
+      animation: popIn 0.2s ease forwards;
+      border-top: 4px solid var(--accent);
+    }
+
+    @keyframes popIn {
+      from { transform: translateY(8px) scale(0.97); opacity: 0; }
+      to   { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal h2 {
+      margin-bottom: 6px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .modal p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .modal form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .modal input[type=file] {
+      padding: 10px;
+      border: 2px dashed #d0d7de;
+      border-radius: 10px;
+      width: 100%;
+      cursor: pointer;
+      font-size: 13px;
+      background: #f9fafb;
+    }
+
+    .modal input[type=text],
+    .modal input[type=password],
+    .modal textarea,
+    .modal select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #d0d7de;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .modal textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .modal label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 9px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+
+    .btn:hover {
+      filter: brightness(0.95);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      font-size: 18px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .loader {
+      display: none;
+      margin: 20px auto;
+      border: 5px solid #eee;
+      border-top: 5px solid var(--accent);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .download-section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .download-section p {
+      margin-bottom: 12px;
+      color: #2e7d32;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-icon">❤</div>
+        <div>
+          <div class="brand-text-main">ToolVerse (PROTOTYPE)</div>
+          <div class="brand-text-sub">One UNIverse all TOOLs</div>
+        </div>
+      </div>
+
+      <!-- <nav class="main-nav">
+        <a href="#">Merge PDF</a>
+        <a href="#">Split PDF</a>
+        <a href="#">Compress PDF</a>
+        <a href="#">Convert PDF</a>
+        <a href="#">All PDF Tools</a>
+      </nav> -->
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="page">
+    <section class="hero">
+      <h1 class="hero-title">Our universe for all tasks in one Place</h1>
+      <p class="hero-subtitle">
+        Enter the ToolVerse — a universe of tools for every digital task. Merge, split, compress,
+        convert, unlock or watermark PDFs effortlessly. Everything you need is here, 100% FREE.
+      </p>
+
+      <div class="filter-row">
+        <span class="pill active" data-filter="all">All <span class="count">(0)</span></span>
+        <span class="pill" data-filter="pdf">PDF <span class="count">(0)</span></span>
+        <span class="pill" data-filter="word">Word <span class="count">(0)</span></span>
+        <span class="pill" data-filter="ppt">PowerPoint <span class="count">(0)</span></span>
+        <span class="pill" data-filter="image">Images <span class="count">(0)</span></span>
+        <span class="pill" data-filter="excel">Excel/CSV <span class="count">(0)</span></span>
+        <span class="pill" data-filter="security">PDF Security <span class="count">(0)</span></span>
+      </div>
+
+    </section>
+
+    <!-- TOOLS GRID -->
+    <section>
+      <div class="tools-grid">
+
+        <!-- ========== PDF TOOLS ========== -->
+        <article class="tool-card clickable" data-category="pdf" id="pdfToWordCard">
+          <div class="tool-icon icon-word">W</div>
+          <div>
+            <div class="tool-title">PDF to Word</div>
+            <p class="tool-text">Convert PDF files into editable Word documents.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="pdf">
+          <div class="tool-icon icon-violet">P</div>
+          <div>
+            <div class="tool-title">PDF to PPT</div>
+            <p class="tool-text">Turn your PDF files into editable PowerPoint presentations.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="pdf">
+          <div class="tool-icon icon-blue">X</div>
+          <div>
+            <div class="tool-title">PDF to Excel</div>
+            <p class="tool-text">Extract data from PDF and export into Excel sheets.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="pdf">
+          <div class="tool-icon icon-blue">IMG</div>
+          <div>
+            <div class="tool-title">PDF to Image</div>
+            <p class="tool-text">Convert each page of your PDF into image files.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="pdf">
+          <div class="tool-icon icon-violet">HT</div>
+          <div>
+            <div class="tool-title">PDF from HTML</div>
+            <p class="tool-text">Generate PDFs from webpages or HTML content.</p>
+          </div>
+        </article>
+
+        <article class="tool-card clickable" data-category="pdf" id="mergePdfCard">
+          <div class="tool-icon icon-merge">⇄</div>
+          <div>
+            <div class="tool-title">Merge PDFs</div>
+            <p class="tool-text">Combine multiple PDF files into one.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="pdf">
+          <div class="tool-icon icon-compress">⬇</div>
+          <div>
+            <div class="tool-title">Compress PDFs</div>
+            <p class="tool-text">Reduce file size while maintaining quality.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="pdf">
+          <div class="tool-icon icon-split">✂</div>
+          <div>
+            <div class="tool-title">Split PDF</div>
+            <p class="tool-text">Split a PDF into multiple smaller documents.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="pdf">
+          <div class="tool-icon icon-violet">🗑</div>
+          <div>
+            <div class="tool-title">Remove Pages from PDF</div>
+            <p class="tool-text">Delete unwanted pages from your PDF.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="pdf">
+          <div class="tool-icon icon-blue">📄</div>
+          <div>
+            <div class="tool-title">Extract Pages from PDF</div>
+            <p class="tool-text">Extract specific pages and save them as new PDFs.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="security">
+          <div class="tool-icon icon-violet">🔒✍</div>
+          <div>
+            <div class="tool-title">Uneditable PDFs</div>
+            <p class="tool-text">Make your PDFs read-only and uneditable.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="security">
+          <div class="tool-icon icon-violet">🔐</div>
+          <div>
+            <div class="tool-title">Lock PDF</div>
+            <p class="tool-text">Secure your PDF with a password.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="security">
+          <div class="tool-icon icon-blue">🔓</div>
+          <div>
+            <div class="tool-title">Unlock PDF</div>
+            <p class="tool-text">Remove password restrictions from PDFs.</p>
+          </div>
+        </article>
+
+        <!-- ========== WORD TOOLS ========== -->
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-blue">PDF</div>
+          <div>
+            <div class="tool-title">Word to PDF</div>
+            <p class="tool-text">Convert Word documents into PDFs easily.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-violet">PPT</div>
+          <div>
+            <div class="tool-title">Word to PPT</div>
+            <p class="tool-text">Transform your Word files into presentation slides.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-blue">XLS</div>
+          <div>
+            <div class="tool-title">Word to Excel</div>
+            <p class="tool-text">Extract tabular data from Word and export to Excel.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-blue">IMG</div>
+          <div>
+            <div class="tool-title">Word to Image</div>
+            <p class="tool-text">Convert Word documents into image files.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-merge">⇄</div>
+          <div>
+            <div class="tool-title">Merge Word</div>
+            <p class="tool-text">Combine multiple Word documents into one file.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-compress">⬇</div>
+          <div>
+            <div class="tool-title">Compress Word</div>
+            <p class="tool-text">Reduce Word document size efficiently.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-split">✂</div>
+          <div>
+            <div class="tool-title">Split Word</div>
+            <p class="tool-text">Split a large Word file into smaller ones.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-violet">🗑</div>
+          <div>
+            <div class="tool-title">Remove Pages from Word</div>
+            <p class="tool-text">Delete unwanted pages from your Word document.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="word">
+          <div class="tool-icon icon-blue">📄</div>
+          <div>
+            <div class="tool-title">Extract Pages from Word</div>
+            <p class="tool-text">Extract specific pages from Word into new documents.</p>
+          </div>
+        </article>
+
+        <!-- ========== POWERPOINT TOOLS ========== -->
+        <article class="tool-card" data-category="ppt">
+          <div class="tool-icon icon-violet">PDF</div>
+          <div>
+            <div class="tool-title">PPT to PDF</div>
+            <p class="tool-text">Convert PowerPoint slides into PDF format.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="ppt">
+          <div class="tool-icon icon-blue">IMG</div>
+          <div>
+            <div class="tool-title">PPT to Image</div>
+            <p class="tool-text">Convert slides into high-quality images.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="ppt">
+          <div class="tool-icon icon-merge">⇄</div>
+          <div>
+            <div class="tool-title">Merge PPT</div>
+            <p class="tool-text">Combine multiple PowerPoint files.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="ppt">
+          <div class="tool-icon icon-compress">⬇</div>
+          <div>
+            <div class="tool-title">Compress PPT</div>
+            <p class="tool-text">Reduce the file size of PowerPoint presentations.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="ppt">
+          <div class="tool-icon icon-split">✂</div>
+          <div>
+            <div class="tool-title">Split PPT</div>
+            <p class="tool-text">Split slides into multiple separate presentations.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="ppt">
+          <div class="tool-icon icon-violet">🗑</div>
+          <div>
+            <div class="tool-title">Remove Slides</div>
+            <p class="tool-text">Remove unwanted slides from a presentation.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="ppt">
+          <div class="tool-icon icon-blue">📄</div>
+          <div>
+            <div class="tool-title">Extract Slides</div>
+            <p class="tool-text">Extract specific slides into a new file.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="ppt">
+          <div class="tool-icon icon-violet">🎨</div>
+          <div>
+            <div class="tool-title">Apply Barclays Theme</div>
+            <p class="tool-text">Apply the Barclays presentation theme to your PPT.</p>
+          </div>
+        </article>
+
+        <!-- ========== IMAGE TOOLS ========== -->
+        <article class="tool-card" data-category="image">
+          <div class="tool-icon icon-blue">PDF</div>
+          <div>
+            <div class="tool-title">Image to PDF</div>
+            <p class="tool-text">Convert image files into a PDF document.</p>
+          </div>
+        </article>
+
+        <!-- ========== EXCEL / CSV TOOLS ========== -->
+        <article class="tool-card" data-category="excel,csv">
+          <div class="tool-icon icon-blue">CSV</div>
+          <div>
+            <div class="tool-title">Excel to CSV</div>
+            <p class="tool-text">Convert Excel files into CSV format.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="excel,csv">
+          <div class="tool-icon icon-violet">XLS</div>
+          <div>
+            <div class="tool-title">CSV to Excel</div>
+            <p class="tool-text">Turn your CSV files into formatted Excel spreadsheets.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="excel">
+          <div class="tool-icon icon-blue">PDF</div>
+          <div>
+            <div class="tool-title">Excel to PDF</div>
+            <p class="tool-text">Export Excel sheets to PDF format easily.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="excel">
+          <div class="tool-icon icon-violet">DOC</div>
+          <div>
+            <div class="tool-title">Excel to Word</div>
+            <p class="tool-text">Convert Excel data tables into Word documents.</p>
+          </div>
+        </article>
+
+        <article class="tool-card" data-category="excel">
+          <div class="tool-icon icon-blue">IMG</div>
+          <div>
+            <div class="tool-title">Excel to Image</div>
+            <p class="tool-text">Export your Excel data as images for sharing.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== MODALS FOR ALL TOOLS ===== -->
+
+  <!-- PDF to Word Modal -->
+  <div class="modal-overlay" id="modalWord">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalWord')">&times;</span>
+      <h2>PDF to Word Converter</h2>
+      <p>Upload one or more PDF files to convert them into editable Word documents.</p>
+
+      <form method="post" action="/pdf-to-word/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file(s)</label>
+        <input type="file" name="pdf_files" multiple accept=".pdf" />
+        <button class="btn" type="submit">Convert to Word</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Merge PDF Modal -->
+  <div class="modal-overlay" id="modalMerge">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalMerge')">&times;</span>
+      <h2>Merge PDF Files</h2>
+      <p>Select multiple PDF files to merge them into a single document.</p>
+
+      <form method="post" action="/merge-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file(s)</label>
+        <input type="file" name="pdf_files" multiple accept=".pdf" />
+        <button class="btn" type="submit">Merge PDFs</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PDF to PPT -->
+  <div class="modal-overlay" id="modalPdfToPpt">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalPdfToPpt')">&times;</span>
+      <h2>PDF to PPT</h2>
+      <p>Convert your PDFs into editable PowerPoint presentations.</p>
+
+      <form method="post" action="/pdf-to-ppt/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file(s)</label>
+        <input type="file" name="pdf_files" multiple accept=".pdf" />
+        <button class="btn" type="submit">Convert to PPT</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PDF to Excel -->
+  <div class="modal-overlay" id="modalPdfToExcel">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalPdfToExcel')">&times;</span>
+      <h2>PDF to Excel</h2>
+      <p>Extract tables and structured data from PDF into Excel sheets.</p>
+
+      <form method="post" action="/pdf-to-excel/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file(s)</label>
+        <input type="file" name="pdf_files" multiple accept=".pdf" />
+        <button class="btn" type="submit">Convert to Excel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PDF to Image -->
+  <div class="modal-overlay" id="modalPdfToImage">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalPdfToImage')">&times;</span>
+      <h2>PDF to Image</h2>
+      <p>Convert each page of your PDF into image files.</p>
+
+      <form method="post" action="/pdf-to-image/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file(s)</label>
+        <input type="file" name="pdf_files" multiple accept=".pdf" />
+        <label>Output image format</label>
+        <select name="image_format">
+          <option value="jpg">JPG</option>
+          <option value="png">PNG</option>
+        </select>
+        <button class="btn" type="submit">Convert to Images</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PDF from HTML -->
+  <div class="modal-overlay" id="modalPdfFromHtml">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalPdfFromHtml')">&times;</span>
+      <h2>PDF from HTML</h2>
+      <p>Create a PDF from a webpage URL or raw HTML content.</p>
+
+      <form method="post" action="/pdf-from-html/">
+        {% csrf_token %}
+        <label>Webpage URL (optional)</label>
+        <input type="text" name="url" placeholder="https://example.com/page" />
+        <label>Or paste HTML content</label>
+        <textarea name="html_content" placeholder="&lt;html&gt;...&lt;/html&gt;"></textarea>
+        <button class="btn" type="submit">Generate PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Compress PDFs -->
+  <div class="modal-overlay" id="modalCompressPdfs">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalCompressPdfs')">&times;</span>
+      <h2>Compress PDFs</h2>
+      <p>Reduce file size while keeping your PDFs readable.</p>
+
+      <form method="post" action="/compress-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file(s)</label>
+        <input type="file" name="pdf_files" multiple accept=".pdf" />
+        <label>Compression level</label>
+        <select name="compression_level">
+          <option value="high">High compression (smaller size)</option>
+          <option value="medium" selected>Balanced</option>
+          <option value="low">Low compression (higher quality)</option>
+        </select>
+        <button class="btn" type="submit">Compress PDFs</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Split PDF -->
+  <div class="modal-overlay" id="modalSplitPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalSplitPdf')">&times;</span>
+      <h2>Split PDF</h2>
+      <p>Split a PDF into multiple documents based on page ranges.</p>
+
+      <form method="post" action="/split-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file</label>
+        <input type="file" name="pdf_file" accept=".pdf" />
+        <label>Page ranges to split on</label>
+        <input type="text" name="ranges" placeholder="e.g. 1-3, 4-4, 5-10" />
+        <button class="btn" type="submit">Split PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Remove Pages from PDF -->
+  <div class="modal-overlay" id="modalRemovePagesPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalRemovePagesPdf')">&times;</span>
+      <h2>Remove Pages from PDF</h2>
+      <p>Delete specific pages from your PDF file.</p>
+
+      <form method="post" action="/remove-pages-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file</label>
+        <input type="file" name="pdf_file" accept=".pdf" />
+        <label>Pages to remove</label>
+        <input type="text" name="pages" placeholder="e.g. 2, 5-7" />
+        <button class="btn" type="submit">Remove Pages</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Extract Pages from PDF -->
+  <div class="modal-overlay" id="modalExtractPagesPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalExtractPagesPdf')">&times;</span>
+      <h2>Extract Pages from PDF</h2>
+      <p>Export selected pages as a new PDF document.</p>
+
+      <form method="post" action="/extract-pages-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file</label>
+        <input type="file" name="pdf_file" accept=".pdf" />
+        <label>Pages to extract</label>
+        <input type="text" name="pages" placeholder="e.g. 1-3, 8" />
+        <button class="btn" type="submit">Extract Pages</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Uneditable PDFs -->
+  <div class="modal-overlay" id="modalUneditablePdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalUneditablePdf')">&times;</span>
+      <h2>Uneditable PDFs</h2>
+      <p>Flatten your PDFs to make them harder to edit.</p>
+
+      <form method="post" action="/make-uneditable-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file(s)</label>
+        <input type="file" name="pdf_files" multiple accept=".pdf" />
+        <button class="btn" type="submit">Make Uneditable</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lock PDF -->
+  <div class="modal-overlay" id="modalLockPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalLockPdf')">&times;</span>
+      <h2>Lock PDF</h2>
+      <p>Protect your PDF with a password before sharing.</p>
+
+      <form method="post" action="/lock-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PDF file</label>
+        <input type="file" name="pdf_file" accept=".pdf" />
+        <label>Set password</label>
+        <input type="password" name="password" placeholder="Choose a strong password" />
+        <button class="btn" type="submit">Lock PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Unlock PDF -->
+  <div class="modal-overlay" id="modalUnlockPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalUnlockPdf')">&times;</span>
+      <h2>Unlock PDF</h2>
+      <p>Remove password protection from your PDF.</p>
+
+      <form method="post" action="/unlock-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload locked PDF file</label>
+        <input type="file" name="pdf_file" accept=".pdf" />
+        <label>Current password</label>
+        <input type="password" name="password" placeholder="Enter the PDF password" />
+        <button class="btn" type="submit">Unlock PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Word to PDF -->
+  <div class="modal-overlay" id="modalWordToPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalWordToPdf')">&times;</span>
+      <h2>Word to PDF</h2>
+      <p>Convert your Word documents into PDF files.</p>
+
+      <form method="post" action="/word-to-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file(s)</label>
+        <input type="file" name="word_files" multiple accept=".doc,.docx" />
+        <button class="btn" type="submit">Convert to PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Word to PPT -->
+  <div class="modal-overlay" id="modalWordToPpt">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalWordToPpt')">&times;</span>
+      <h2>Word to PPT</h2>
+      <p>Turn your Word documents into presentation slides.</p>
+
+      <form method="post" action="/word-to-ppt/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file</label>
+        <input type="file" name="word_file" accept=".doc,.docx" />
+        <button class="btn" type="submit">Convert to PPT</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Word to Excel -->
+  <div class="modal-overlay" id="modalWordToExcel">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalWordToExcel')">&times;</span>
+      <h2>Word to Excel</h2>
+      <p>Extract table-like data from Word into Excel format.</p>
+
+      <form method="post" action="/word-to-excel/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file</label>
+        <input type="file" name="word_file" accept=".doc,.docx" />
+        <button class="btn" type="submit">Convert to Excel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Word to Image -->
+  <div class="modal-overlay" id="modalWordToImage">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalWordToImage')">&times;</span>
+      <h2>Word to Image</h2>
+      <p>Render each page of your Word document as an image.</p>
+
+      <form method="post" action="/word-to-image/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file</label>
+        <input type="file" name="word_file" accept=".doc,.docx" />
+        <button class="btn" type="submit">Convert to Images</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Merge Word -->
+  <div class="modal-overlay" id="modalMergeWord">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalMergeWord')">&times;</span>
+      <h2>Merge Word Documents</h2>
+      <p>Combine multiple Word files into a single document.</p>
+
+      <form method="post" action="/merge-word/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file(s)</label>
+        <input type="file" name="word_files" multiple accept=".doc,.docx" />
+        <button class="btn" type="submit">Merge Word Files</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Compress Word -->
+  <div class="modal-overlay" id="modalCompressWord">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalCompressWord')">&times;</span>
+      <h2>Compress Word</h2>
+      <p>Reduce the size of Word documents.</p>
+
+      <form method="post" action="/compress-word/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file</label>
+        <input type="file" name="word_file" accept=".doc,.docx" />
+        <button class="btn" type="submit">Compress Word</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Split Word -->
+  <div class="modal-overlay" id="modalSplitWord">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalSplitWord')">&times;</span>
+      <h2>Split Word</h2>
+      <p>Split a large Word document into multiple smaller files.</p>
+
+      <form method="post" action="/split-word/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file</label>
+        <input type="file" name="word_file" accept=".doc,.docx" />
+        <label>Page ranges to split</label>
+        <input type="text" name="ranges" placeholder="e.g. 1-3, 4-8" />
+        <button class="btn" type="submit">Split Word</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Remove Pages from Word -->
+  <div class="modal-overlay" id="modalRemovePagesWord">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalRemovePagesWord')">&times;</span>
+      <h2>Remove Pages from Word</h2>
+      <p>Delete specific pages from a Word document.</p>
+
+      <form method="post" action="/remove-pages-word/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file</label>
+        <input type="file" name="word_file" accept=".doc,.docx" />
+        <label>Pages to remove</label>
+        <input type="text" name="pages" placeholder="e.g. 2, 5-7" />
+        <button class="btn" type="submit">Remove Pages</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Extract Pages from Word -->
+  <div class="modal-overlay" id="modalExtractPagesWord">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalExtractPagesWord')">&times;</span>
+      <h2>Extract Pages from Word</h2>
+      <p>Extract selected pages into a new Word document.</p>
+
+      <form method="post" action="/extract-pages-word/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Word file</label>
+        <input type="file" name="word_file" accept=".doc,.docx" />
+        <label>Pages to extract</label>
+        <input type="text" name="pages" placeholder="e.g. 1-3, 8" />
+        <button class="btn" type="submit">Extract Pages</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PPT to PDF -->
+  <div class="modal-overlay" id="modalPptToPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalPptToPdf')">&times;</span>
+      <h2>PPT to PDF</h2>
+      <p>Convert your PowerPoint presentations into PDF files.</p>
+
+      <form method="post" action="/ppt-to-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PPT file(s)</label>
+        <input type="file" name="ppt_files" multiple accept=".ppt,.pptx" />
+        <button class="btn" type="submit">Convert to PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PPT to Image -->
+  <div class="modal-overlay" id="modalPptToImage">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalPptToImage')">&times;</span>
+      <h2>PPT to Image</h2>
+      <p>Export slides from PPT as images.</p>
+
+      <form method="post" action="/ppt-to-image/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PPT file</label>
+        <input type="file" name="ppt_file" accept=".ppt,.pptx" />
+        <label>Output image format</label>
+        <select name="image_format">
+          <option value="jpg">JPG</option>
+          <option value="png">PNG</option>
+        </select>
+        <button class="btn" type="submit">Convert to Images</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Merge PPT -->
+  <div class="modal-overlay" id="modalMergePpt">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalMergePpt')">&times;</span>
+      <h2>Merge PPT</h2>
+      <p>Combine multiple presentation files into one.</p>
+
+      <form method="post" action="/merge-ppt/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PPT file(s)</label>
+        <input type="file" name="ppt_files" multiple accept=".ppt,.pptx" />
+        <button class="btn" type="submit">Merge PPT Files</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Compress PPT -->
+  <div class="modal-overlay" id="modalCompressPpt">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalCompressPpt')">&times;</span>
+      <h2>Compress PPT</h2>
+      <p>Reduce the file size of your presentation.</p>
+
+      <form method="post" action="/compress-ppt/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PPT file</label>
+        <input type="file" name="ppt_file" accept=".ppt,.pptx" />
+        <button class="btn" type="submit">Compress PPT</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Split PPT -->
+  <div class="modal-overlay" id="modalSplitPpt">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalSplitPpt')">&times;</span>
+      <h2>Split PPT</h2>
+      <p>Split slides into multiple presentation files.</p>
+
+      <form method="post" action="/split-ppt/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PPT file</label>
+        <input type="file" name="ppt_file" accept=".ppt,.pptx" />
+        <label>Slide ranges</label>
+        <input type="text" name="ranges" placeholder="e.g. 1-5, 6-10" />
+        <button class="btn" type="submit">Split PPT</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Remove Slides -->
+  <div class="modal-overlay" id="modalRemoveSlidesPpt">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalRemoveSlidesPpt')">&times;</span>
+      <h2>Remove Slides</h2>
+      <p>Delete specific slides from your presentation.</p>
+
+      <form method="post" action="/remove-slides-ppt/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PPT file</label>
+        <input type="file" name="ppt_file" accept=".ppt,.pptx" />
+        <label>Slides to remove</label>
+        <input type="text" name="slides" placeholder="e.g. 2, 5-7" />
+        <button class="btn" type="submit">Remove Slides</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Extract Slides -->
+  <div class="modal-overlay" id="modalExtractSlidesPpt">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalExtractSlidesPpt')">&times;</span>
+      <h2>Extract Slides</h2>
+      <p>Extract selected slides into a new presentation.</p>
+
+      <form method="post" action="/extract-slides-ppt/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PPT file</label>
+        <input type="file" name="ppt_file" accept=".ppt,.pptx" />
+        <label>Slides to extract</label>
+        <input type="text" name="slides" placeholder="e.g. 1-3, 8" />
+        <button class="btn" type="submit">Extract Slides</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Apply Barclays Theme -->
+  <div class="modal-overlay" id="modalApplyBarclaysTheme">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalApplyBarclaysTheme')">&times;</span>
+      <h2>Apply Barclays Theme</h2>
+      <p>Apply the Barclays corporate theme to your presentation.</p>
+
+      <form method="post" action="/apply-barclays-theme/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload PPT file</label>
+        <input type="file" name="ppt_file" accept=".ppt,.pptx" />
+        <button class="btn" type="submit">Apply Theme</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Image to PDF -->
+  <div class="modal-overlay" id="modalImageToPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalImageToPdf')">&times;</span>
+      <h2>Image to PDF</h2>
+      <p>Combine one or more images into a single PDF.</p>
+
+      <form method="post" action="/image-to-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload image file(s)</label>
+        <input type="file" name="images" multiple accept="image/*" />
+        <button class="btn" type="submit">Convert to PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Excel to CSV -->
+  <div class="modal-overlay" id="modalExcelToCsv">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalExcelToCsv')">&times;</span>
+      <h2>Excel to CSV</h2>
+      <p>Convert Excel workbooks into CSV format.</p>
+
+      <form method="post" action="/excel-to-csv/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Excel file</label>
+        <input type="file" name="excel_file" accept=".xls,.xlsx" />
+        <button class="btn" type="submit">Convert to CSV</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CSV to Excel -->
+  <div class="modal-overlay" id="modalCsvToExcel">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalCsvToExcel')">&times;</span>
+      <h2>CSV to Excel</h2>
+      <p>Convert CSV files into formatted Excel spreadsheets.</p>
+
+      <form method="post" action="/csv-to-excel/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload CSV file</label>
+        <input type="file" name="csv_file" accept=".csv" />
+        <button class="btn" type="submit">Convert to Excel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Excel to PDF -->
+  <div class="modal-overlay" id="modalExcelToPdf">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalExcelToPdf')">&times;</span>
+      <h2>Excel to PDF</h2>
+      <p>Export Excel sheets into PDF format.</p>
+
+      <form method="post" action="/excel-to-pdf/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Excel file</label>
+        <input type="file" name="excel_file" accept=".xls,.xlsx" />
+        <button class="btn" type="submit">Convert to PDF</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Excel to Word -->
+  <div class="modal-overlay" id="modalExcelToWord">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalExcelToWord')">&times;</span>
+      <h2>Excel to Word</h2>
+      <p>Convert your Excel tables into Word documents.</p>
+
+      <form method="post" action="/excel-to-word/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Excel file</label>
+        <input type="file" name="excel_file" accept=".xls,.xlsx" />
+        <button class="btn" type="submit">Convert to Word</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Excel to Image -->
+  <div class="modal-overlay" id="modalExcelToImage">
+    <div class="modal">
+      <span class="close-btn" onclick="closeModal('modalExcelToImage')">&times;</span>
+      <h2>Excel to Image</h2>
+      <p>Export Excel data as images for easy sharing.</p>
+
+      <form method="post" action="/excel-to-image/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload Excel file</label>
+        <input type="file" name="excel_file" accept=".xls,.xlsx" />
+        <button class="btn" type="submit">Convert to Images</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ===== FILTERING & TOOL COUNT SYSTEM =====
+    const pills = document.querySelectorAll('.pill');
+    const cards = document.querySelectorAll('.tool-card');
+
+    function updateCounts() {
+      pills.forEach(pill => {
+        const filter = pill.dataset.filter;
+        let count = 0;
+
+        if (filter === 'all') {
+          count = cards.length;
+        } else {
+          cards.forEach(card => {
+            const categories = card.dataset.category.split(',').map(c => c.trim().toLowerCase());
+            if (categories.includes(filter)) count++;
+          });
+        }
+
+        const countSpan = pill.querySelector('.count');
+        if (countSpan) countSpan.textContent = `(${count})`;
+      });
+    }
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const filter = pill.dataset.filter;
+
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        cards.forEach(card => {
+          const categories = card.dataset.category.split(',').map(c => c.trim().toLowerCase());
+          if (filter === 'all' || categories.includes(filter)) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        updateCounts();
+      });
+    });
+
+    updateCounts();
+
+    // ===== MODAL LOGIC FOR ALL CARDS =====
+
+    const titleToModalId = {
+      'PDF to Word': 'modalWord',
+      'PDF to PPT': 'modalPdfToPpt',
+      'PDF to Excel': 'modalPdfToExcel',
+      'PDF to Image': 'modalPdfToImage',
+      'PDF from HTML': 'modalPdfFromHtml',
+      'Merge PDFs': 'modalMerge',
+      'Compress PDFs': 'modalCompressPdfs',
+      'Split PDF': 'modalSplitPdf',
+      'Remove Pages from PDF': 'modalRemovePagesPdf',
+      'Extract Pages from PDF': 'modalExtractPagesPdf',
+      'Uneditable PDFs': 'modalUneditablePdf',
+      'Lock PDF': 'modalLockPdf',
+      'Unlock PDF': 'modalUnlockPdf',
+
+      'Word to PDF': 'modalWordToPdf',
+      'Word to PPT': 'modalWordToPpt',
+      'Word to Excel': 'modalWordToExcel',
+      'Word to Image': 'modalWordToImage',
+      'Merge Word': 'modalMergeWord',
+      'Compress Word': 'modalCompressWord',
+      'Split Word': 'modalSplitWord',
+      'Remove Pages from Word': 'modalRemovePagesWord',
+      'Extract Pages from Word': 'modalExtractPagesWord',
+
+      'PPT to PDF': 'modalPptToPdf',
+      'PPT to Image': 'modalPptToImage',
+      'Merge PPT': 'modalMergePpt',
+      'Compress PPT': 'modalCompressPpt',
+      'Split PPT': 'modalSplitPpt',
+      'Remove Slides': 'modalRemoveSlidesPpt',
+      'Extract Slides': 'modalExtractSlidesPpt',
+      'Apply Barclays Theme': 'modalApplyBarclaysTheme',
+
+      'Image to PDF': 'modalImageToPdf',
+
+      'Excel to CSV': 'modalExcelToCsv',
+      'CSV to Excel': 'modalCsvToExcel',
+      'Excel to PDF': 'modalExcelToPdf',
+      'Excel to Word': 'modalExcelToWord',
+      'Excel to Image': 'modalExcelToImage'
+    };
+
+    // Attach click handlers based on card title text
+    cards.forEach(card => {
+      const titleEl = card.querySelector('.tool-title');
+      if (!titleEl) return;
+      const title = titleEl.textContent.trim();
+      const modalId = titleToModalId[title];
+      if (!modalId) return;
+
+      card.classList.add('clickable');
+      card.addEventListener('click', () => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.style.display = 'flex';
+        }
+      });
+    });
+
+    function closeModal(id) {
+      const modalOverlay = document.getElementById(id);
+      if (modalOverlay) {
+        modalOverlay.style.display = 'none';
+      }
+    }
+
+    // (simulateProcessing & resetModal left unused for now, safe to remove later if you want)
+    function simulateProcessing(type) {
+      const modalSelector = type === 'word' ? '#modalWord' : '#modalMerge';
+      const modal = document.querySelector(modalSelector + ' .modal');
+      if (!modal) return;
+      const loader = modal.querySelector('.loader');
+      const download = modal.querySelector('.download-section');
+
+      if (!loader || !download) return;
+
+      loader.style.display = 'block';
+      download.style.display = 'none';
+
+      setTimeout(() => {
+        loader.style.display = 'none';
+        download.style.display = 'block';
+      }, 2500);
+    }
+
+    function resetModal(id) {
+      const modal = document.querySelector('#' + id + ' .modal');
+      if (!modal) return;
+      const loader = modal.querySelector('.loader');
+      const download = modal.querySelector('.download-section');
+      if (loader) loader.style.display = 'none';
+      if (download) download.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
